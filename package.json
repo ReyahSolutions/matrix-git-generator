@@ -1,0 +1,20 @@
+{
+  "name": "matrix-git-generator",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "repository": "git@github.com:ReyahSolutions/matrix-git-generator.git",
+  "author": "Reyah <contact@reyah.eu>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/exec": "^1.0.4",
+    "@actions/github": "^4.0.0",
+    "@octokit/webhooks": "^7.6.4"
+  }
+}
