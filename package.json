@@ -6,9 +6,11 @@
   "author": "Reyah <contact@reyah.eu>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:prod": "tsc && ncc build -m ./build/main.js"
   },
   "devDependencies": {
+    "@zeit/ncc": "^0.22.3",
     "typescript": "^3.9.6"
   },
   "dependencies": {
