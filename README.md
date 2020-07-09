@@ -14,13 +14,16 @@ jobs:
     name: Find services
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.generate_matrix.outputs.matrix }}
+      matrix: "{\"path\": ${{ steps.generate_matrix.outputs.matrix }} }"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Generate matrix
         id: generate_matrix
         uses: ReyahSolutions/matrix-git-generator@v1
+        with:
+          filters: |
+            service.*/**
 
   test_service:
     name: Test service
@@ -30,6 +33,9 @@ jobs:
       matrix: ${{fromJson(needs.generate_matrix.outputs.matrix)}}
       fail-fast: true 
     steps:
-      # [...] Do what ever you want
-
+      # [...] Do what ever you want for each match
+      - name: Example
+        run: |
+          cd ${{ matrix.path }}
+          make test
 ```
