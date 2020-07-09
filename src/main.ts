@@ -1,17 +1,28 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { Webhooks } from '@octokit/webhooks';
+import { match } from 'minimatch';
 
 import * as git from './git';
 
 async function run() {
     try {
+        const output: string[] = [];
         const token = core.getInput('token', { required: false });
         const filtersInput = core.getInput('filters', { required: true });
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
         const changes = await getFileChanges(token);
-        console.log("changes", changes);
-        console.log("filters", filters);
+        filters.forEach((filter) => {
+            const matchList = match(changes, filter);
+            matchList.forEach(potentialMatch => {
+                const baseFolder = potentialMatch.split("/")[0];
+                if (output.indexOf(baseFolder) === -1) {
+                    output.push(baseFolder);
+                }
+            })
+        });
+        console.log("output", output);
+        core.setOutput('matrix', JSON.stringify({ path: output }));
     } catch (err) {
         core.setFailed(err.message);
     }

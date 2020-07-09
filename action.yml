@@ -15,6 +15,9 @@ inputs:
   filters:
     description: A list of filter to apply
     required: true
+outputs:
+  matrix:
+    description: An stringified array for each sub-directories that contain a file changes and that match the filters
 runs:
   using: 'node12'
   main: 'dist/index.js'
