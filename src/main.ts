@@ -8,8 +8,8 @@ import * as git from './git';
 async function run() {
     try {
         const output: string[] = [];
-        const token = core.getInput('token', { required: false });
-        const filtersInput = core.getInput('filters', { required: true });
+        const token = core.getInput('token', {required: false});
+        const filtersInput = core.getInput('filters', {required: true});
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
         const changes = await getFileChanges(token);
         filters.forEach((filter) => {
@@ -21,8 +21,7 @@ async function run() {
                 }
             })
         });
-        console.log("output", output);
-        core.setOutput('matrix', JSON.stringify({ path: output }));
+        core.setOutput('matrix', JSON.stringify(output));
     } catch (err) {
         core.setFailed(err.message);
     }
@@ -46,7 +45,7 @@ async function getFileChangesFromPush(): Promise<string[]> {
         return [];
     }
 
-    const baseInput = git.trimRefs(core.getInput('base', { required: false }));
+    const baseInput = git.trimRefs(core.getInput('base', {required: false}));
 
     const base = git.trimRefsHeads(baseInput) === git.trimRefsHeads(push.ref) ? push.before : baseInput
     if (base === git.NULL_SHA) {
