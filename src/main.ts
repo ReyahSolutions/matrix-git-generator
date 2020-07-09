@@ -9,7 +9,7 @@ async function run() {
         const token = core.getInput('token', { required: false });
         const filtersInput = core.getInput('filters', { required: true });
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-        const changes = getFileChanges(token);
+        const changes = await getFileChanges(token);
         console.log("changes", changes);
         console.log("filters", filters);
     } catch (err) {
