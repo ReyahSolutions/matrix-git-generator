@@ -18,6 +18,8 @@ inputs:
 outputs:
   matrix:
     description: An stringified array for each sub-directories that contain a file changes and that match the filters
+  empty:
+    description: Return a boolean to indicate if the matrix is empty or not, useful for skipping jobs based on that matrix
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -22,6 +22,7 @@ async function run() {
             })
         });
         core.setOutput('matrix', JSON.stringify(output));
+        core.setOutput('empty', JSON.stringify(output.length === 0));
     } catch (err) {
         core.setFailed(err.message);
     }
@@ -81,4 +82,4 @@ async function getChangedFilesFromApi(
     return files
 }
 
-run();
+run().catch(err => core.setFailed(err.message));
