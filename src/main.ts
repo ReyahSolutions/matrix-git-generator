@@ -14,7 +14,7 @@ async function run() {
             map(s => {
                 const parts = s.split(':', 2)
                 const idx = parts.length == 2
-                    ? parseInt(parts[1], 10)
+                    ? Math.max(parseInt(parts[1], 10), 1) - 1
                     : 0
                 return [parts[0], idx] as const
             });
