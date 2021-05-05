@@ -10,12 +10,19 @@ async function run() {
         const output: string[] = [];
         const token = core.getInput('token', {required: false});
         const filtersInput = core.getInput('filters', {required: true});
-        const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+        const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0).
+            map(s => {
+                const parts = s.split(':', 2)
+                const idx = parts.length == 2
+                    ? Math.max(parseInt(parts[1], 10) - 1, 0)
+                    : 0
+                return [parts[0], idx] as const
+            });
         const changes = await getFileChanges(token);
-        filters.forEach((filter) => {
+        filters.forEach(([filter, idx]) => {
             const matchList = match(changes, filter);
             matchList.forEach(potentialMatch => {
-                const baseFolder = potentialMatch.split("/")[0];
+                const baseFolder = potentialMatch.split("/").slice(0, idx).join("/");
                 if (output.indexOf(baseFolder) === -1) {
                     output.push(baseFolder);
                 }
