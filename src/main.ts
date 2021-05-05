@@ -22,7 +22,7 @@ async function run() {
         filters.forEach(([filter, idx]) => {
             const matchList = match(changes, filter);
             matchList.forEach(potentialMatch => {
-                const baseFolder = potentialMatch.split("/")[idx];
+                const baseFolder = potentialMatch.split("/").slice(0, idx).join("/");
                 if (output.indexOf(baseFolder) === -1) {
                     output.push(baseFolder);
                 }
