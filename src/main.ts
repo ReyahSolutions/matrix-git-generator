@@ -15,10 +15,10 @@ async function run() {
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
         const changes = await getFileChanges(token);
         filters.forEach((filter) => {
-            const changesWorking = changes.map((line) => line.replace(regex, ""));
-            const matchList = match(changesWorking, filter);
-            matchList.forEach(potentialMatch => {
-                const baseFolder = potentialMatch.split("/")[0];
+            const matchList = match(changes, filter);
+            matchList.forEach((potentialMatch) => {
+                const linefiltered = potentialMatch.replace(regex, "");
+                const baseFolder = linefiltered.split("/")[0];
                 if (output.indexOf(baseFolder) === -1) {
                     output.push(baseFolder);
                 }
