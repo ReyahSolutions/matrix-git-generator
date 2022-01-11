@@ -8,9 +8,9 @@ import * as git from './git';
 async function run() {
     try {
         const output: string[] = [];
-        const token = core.getInput('token', {required: false});
-        const filtersInput = core.getInput('filters', {required: true});
-        const working_directory = core.getInput('working_directory', {required: false});                                      
+        const token = core.getInput('token', { required: false });
+        const filtersInput = core.getInput('filters', { required: true });
+        const working_directory = core.getInput('working_directory', { required: false });
         const regex = RegExp(`^${working_directory}\/`);
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
         const changes = await getFileChanges(token);
@@ -49,7 +49,7 @@ async function getFileChangesFromPush(): Promise<string[]> {
         return [];
     }
 
-    const baseInput = git.trimRefs(core.getInput('base', {required: false}));
+    const baseInput = git.trimRefs(core.getInput('base', { required: false }));
 
     const base = git.trimRefsHeads(baseInput) === git.trimRefsHeads(push.ref) ? push.before : baseInput
     if (base === git.NULL_SHA) {
