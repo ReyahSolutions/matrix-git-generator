@@ -14,18 +14,16 @@ async function run() {
         const regex = RegExp(`^${working_directory}\/`);
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
         const changes = await getFileChanges(token);
-        console.log(changes);
         filters.forEach((filter) => {
-            const matchList = match(changes, filter);
+            const changesWorking = changes.map((line) => line.replace(regex, ""));
+            console.log(changesWorking);
+            const matchList = match(changesWorking, filter);
             console.log(matchList);
             matchList.forEach((potentialMatch) => {
-                const linefiltered = potentialMatch.replace(regex, "");
-                console.log(linefiltered);
-                const baseFolder = linefiltered.split("/")[0];
-                console.log(baseFolder);
-                if (output.indexOf(baseFolder) === -1) {
-                    output.push(baseFolder);
-                }
+              const baseFolder = potentialMatch.split("/")[0];
+              if (output.indexOf(baseFolder) === -1) {
+                output.push(baseFolder);
+              }
             })
         });
         core.setOutput('matrix', JSON.stringify(output));
