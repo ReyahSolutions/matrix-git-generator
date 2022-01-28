@@ -16,8 +16,6 @@ async function run() {
         const changes = await getFileChanges(token);
         filters.forEach((filter) => {
             const changesWorking = changes.map((line) => line.replace(regex, ""));
-            console.log(filter);
-            console.log(changesWorking);
             const matchList = match(changesWorking, filter);
             console.log(matchList);
             matchList.forEach((potentialMatch) => {
