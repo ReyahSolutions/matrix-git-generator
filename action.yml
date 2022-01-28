@@ -16,7 +16,7 @@ inputs:
     description: A list of filter to apply
     required: true
   working_directory:
-    description: Working-directory to get folder change
+    description: Working directory to get file changes
     required: false
 outputs:
   matrix:
