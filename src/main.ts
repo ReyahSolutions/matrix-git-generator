@@ -10,8 +10,8 @@ async function run() {
         const output: string[] = [];
         const token = core.getInput('token', { required: false });
         const filtersInput = core.getInput('filters', { required: true });
-        const working_directory = core.getInput('working_directory', { required: false });
-        const regex = RegExp(`^${working_directory}\/`);
+        const workingDirectory = core.getInput('working_directory', { required: false });
+        const regex = RegExp(`^${workingDirectory}\/`);
         const filters = filtersInput.split('\n').map(s => s.trim()).filter(s => s.length > 0);
         const changes = await getFileChanges(token);
         filters.forEach((filter) => {
