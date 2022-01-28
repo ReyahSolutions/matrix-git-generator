@@ -15,6 +15,9 @@ inputs:
   filters:
     description: A list of filter to apply
     required: true
+  working_directory:
+    description: Working directory to get file changes
+    required: false
 outputs:
   matrix:
     description: An stringified array for each sub-directories that contain a file changes and that match the filters
