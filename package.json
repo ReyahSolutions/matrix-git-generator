@@ -2,7 +2,7 @@
   "name": "matrix-git-generator",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "repository": "git@github.com:ReyahSolutions/matrix-git-generator.git",
+  "repository": "git@github.com:jakubsacha-test/matrix-git-generator.git",
   "author": "Reyah <contact@reyah.eu>",
   "license": "MIT",
   "scripts": {
