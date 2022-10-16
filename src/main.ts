@@ -15,7 +15,7 @@ async function run() {
         filters.forEach((filter) => {
             const matchList = match(changes, filter);
             matchList.forEach(potentialMatch => {
-                const baseFolder = potentialMatch.split("/")[0];
+                const baseFolder = potentialMatch.split("/")[0]+"/"+potentialMatch.split("/")[1]+"/"+potentialMatch.split("/")[2];
                 if (output.indexOf(baseFolder) === -1) {
                     output.push(baseFolder);
                 }
