@@ -35,7 +35,7 @@ inputs:
       In some cases you want to trigger all pipelines. This might be the case when you share certain libraries or CI code across all your applications.
       If any file in this directory is modified, matrix will be generated for all available applications.
     required: false
-    default: []
+    default: ""
   filters:
     description: A list of filter to apply
     required: true
