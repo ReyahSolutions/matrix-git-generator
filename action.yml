@@ -12,6 +12,30 @@ inputs:
       Will default to the last commit of the current branch
     required: false
     default: ${{ github.ref }}
+  depth:
+    description: |
+      Define a depth your monorepo structure. For structure like this:
+      /service-abc
+      /service-def
+      you should use depth=1 (default)
+
+      For more nested structure like:
+      /services/service-a
+      /services/service-b
+      you should use depth=2
+
+      For
+      /service/group-1/service-a
+      /service/group-2/service-b
+      you should use depth=3
+    required: false
+    default: 1
+  alwaysTriggerDirs:
+    description: |
+      In some cases you want to trigger all pipelines. This might be the case when you share certain libraries or CI code across all your applications.
+      If any file in this directory is modified, matrix will be generated for all available applications.
+    required: false
+    default: []
   filters:
     description: A list of filter to apply
     required: true
