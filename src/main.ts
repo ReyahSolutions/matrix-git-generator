@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { Webhooks } from '@octokit/webhooks';
-import { filter, match } from 'minimatch';
+import { match } from 'minimatch';
 
 import * as git from './git';
 
@@ -25,6 +25,8 @@ export async function run() {
     if (shouldAlwaysTrigger(alwaysTriggerDirs, changes)) {
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
+
+    console.log("Changes: ", changes);
 
     output = getOutput(filters, changes, depth);
 
