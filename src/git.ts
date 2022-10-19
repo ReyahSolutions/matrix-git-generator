@@ -63,5 +63,5 @@ export async function getAllFilesForDepth(depth: number): Promise<string[]> {
     .split('\n')
     .map((s) => s.trim())
     .filter((s) => s.length > 0)
-    .filter((s) => s.split('/').length <= depth);
+    .filter((s) => s.split('/').length <= depth + 1);
 }
