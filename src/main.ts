@@ -23,6 +23,7 @@ export async function run() {
     let changes = await getFileChanges(token);
 
     if (shouldAlwaysTrigger(alwaysTriggerDirs, changes)) {
+      console.log("One of the common directories has changed, triggering workflows for all services");
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 
