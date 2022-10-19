@@ -7,7 +7,7 @@ import * as git from './git';
 
 export async function run() {
   try {
-    let output: string[] = []
+    let output: string[] = [];
     const token = core.getInput('token', { required: false });
     const depth: number = parseInt(core.getInput('depth', { required: false }));
     const filtersInput = core.getInput('filters', { required: true });
@@ -16,14 +16,22 @@ export async function run() {
       .split('\n')
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
+    console.log('alwaysTriggerDirs', alwaysTriggerDirs);
     const filters = filtersInput
       .split('\n')
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
     let changes = await getFileChanges(token);
+    console.log('changes', changes);
+    console.log(
+      'shouldAlwaysTrigger',
+      shouldAlwaysTrigger(alwaysTriggerDirs, changes)
+    );
 
     if (shouldAlwaysTrigger(alwaysTriggerDirs, changes)) {
-      console.log("One of the common directories has changed, triggering workflows for all services");
+      console.log(
+        'One of the common directories has changed, triggering workflows for all services'
+      );
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 

@@ -39,6 +39,7 @@ describe('Diff matching', () => {
 describe('Should always trigger', () => {
   it('Should trigger when file inside defined directory is modified', async () => {
     expect(shouldAlwaysTrigger(['ci/**'], ['ci/test.sh'])).toBeTruthy();
+    expect(shouldAlwaysTrigger(['ci/**', ".github/workflows/**"], ['ci/skaffold.yml'])).toBeTruthy();
   });
 });
 
@@ -48,14 +49,17 @@ describe('Get all files', () => {
       await getAllFilesFromGit('7ca75c6d8b6021473b8437712c27a18c78381658', 2)
     ).toEqual([
       '.gitignore',
+      '.prettierrc',
       'README.md',
       'action.yml',
       'dist/index.js',
+      'jest.config.js',
       'package.json',
       'src/git.ts',
+      'src/main.test.ts',
       'src/main.ts',
       'tsconfig.json',
-      'yarn.lock'
+      'yarn.lock',
     ]);
   });
 });
