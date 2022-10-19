@@ -26,8 +26,6 @@ export async function run() {
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 
-    console.log("Changes: ", changes);
-
     output = getOutput(filters, changes, depth);
 
     core.setOutput('matrix', JSON.stringify(output));
