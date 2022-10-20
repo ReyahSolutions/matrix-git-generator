@@ -1,6 +1,6 @@
-name: 'Matrix Git generator'
-description: 'A github action that can generate a matrix to run multiple jobs from git changes'
-author: 'Reyah <contact@reyah.eu>'
+name: 'Action Matrix Monorepo'
+description: 'A github action that can generate a matrix jobs to support monorepo setup in github'
+author: 'Jakub Sacha <jakubsacha@gmail.com>'
 inputs:
   token:
     description: 'Github access token'
