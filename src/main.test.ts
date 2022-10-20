@@ -33,6 +33,9 @@ describe('Diff matching', () => {
     expect(
       getOutput(['services/*/*/**'], ['services/group-1/service-a/index.js'], 3)
     ).toEqual(['services/group-1/service-a']);
+    expect(
+      getOutput(['services/*/*/**'], ['services/group-1/service-a/.gitignore'], 3)
+    ).toEqual(['services/group-1/service-a']);
   });
 });
 

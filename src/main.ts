@@ -41,7 +41,7 @@ export async function run() {
 export function getOutput(filters: string[], changes: string[], depth: number) {
   const output: string[] = [];
   filters.forEach((filter) => {
-    const matchList = match(changes, filter);
+    const matchList = match(changes, filter, {dot: true});
     matchList.forEach((potentialMatch) => {
       const baseFolder = potentialMatch.split('/').slice(0, depth).join('/');
       if (output.indexOf(baseFolder) === -1) {
@@ -128,7 +128,7 @@ export function shouldAlwaysTrigger(
   changes: string[]
 ) {
   for (const dir of alwaysTriggerDirs) {
-    if (match(changes, dir).length > 0) {
+    if (match(changes, dir, {dot: true}).length > 0) {
       return true;
     }
   }
