@@ -21,12 +21,15 @@ export async function run() {
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
     let changes = await getFileChanges(token);
+    console.log("Files changed: " + changes);
 
     if (shouldAlwaysTrigger(alwaysTriggerDirs, changes)) {
+      console.log('One of the alwaysTriggerDirs was changed, triggering builds for all services');
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 
     output = getOutput(filters, changes, depth);
+    console.log("Modified files: " + output);
 
     core.setOutput('matrix', JSON.stringify(output));
     core.setOutput('empty', JSON.stringify(output.length === 0));
