@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { Webhooks } from '@octokit/webhooks';
+import { PullRequestEvent, PushEvent } from '@octokit/webhooks-types';
 import { match } from 'minimatch';
 
 import * as git from './git';
@@ -16,22 +16,13 @@ export async function run() {
       .split('\n')
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
-    console.log('alwaysTriggerDirs', alwaysTriggerDirs);
     const filters = filtersInput
       .split('\n')
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
     let changes = await getFileChanges(token);
-    console.log('changes', changes);
-    console.log(
-      'shouldAlwaysTrigger',
-      shouldAlwaysTrigger(alwaysTriggerDirs, changes)
-    );
 
     if (shouldAlwaysTrigger(alwaysTriggerDirs, changes)) {
-      console.log(
-        'One of the common directories has changed, triggering workflows for all services'
-      );
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 
@@ -60,8 +51,7 @@ export function getOutput(filters: string[], changes: string[], depth: number) {
 
 async function getFileChanges(token: string): Promise<string[] | null> {
   if (github.context.eventName === 'pull_request') {
-    const pr = github.context.payload
-      .pull_request as Webhooks.WebhookPayloadPullRequestPullRequest;
+    const pr = (github.context.payload as PullRequestEvent).pull_request;
     return token
       ? await getChangedFilesFromApi(token, pr)
       : await getChangedFilesFromGit(pr.base.sha);
@@ -75,7 +65,7 @@ async function getFileChanges(token: string): Promise<string[] | null> {
 }
 
 async function getFileChangesFromPush(): Promise<string[]> {
-  const push = github.context.payload as Webhooks.WebhookPayloadPush;
+  const push = github.context.payload as PushEvent;
 
   if (git.isTagRef(push.ref)) {
     return [];
@@ -108,13 +98,13 @@ export async function getAllFilesFromGit(
 
 async function getChangedFilesFromApi(
   token: string,
-  pullRequest: Webhooks.WebhookPayloadPullRequestPullRequest
+  pullRequest: PullRequestEvent['pull_request']
 ): Promise<string[]> {
   const client = github.getOctokit(token);
   const pageSize = 100;
   const files: string[] = [];
   for (let page = 0; page * pageSize < pullRequest.changed_files; page++) {
-    const response = await client.pulls.listFiles({
+    const response = await client.rest.pulls.listFiles({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       pull_number: pullRequest.number,
