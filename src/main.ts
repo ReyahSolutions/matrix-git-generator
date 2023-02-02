@@ -56,9 +56,9 @@ export function getOutput(filters: string[], changes: string[], depth: number) {
 }
 
 async function getFileChanges(token: string): Promise<string[] | null> {
+  console.log(github.context);
   if (github.context.eventName === 'pull_request') {
     const pr = (github.context.payload as PullRequestEvent).pull_request;
-    console.log(pr);
     return await getChangedFilesFromApi(token, pr);
   } else if (github.context.eventName === 'push') {
     return getFileChangesFromPush();
