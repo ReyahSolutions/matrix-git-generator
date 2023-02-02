@@ -8,7 +8,8 @@ import * as git from './git';
 export async function run() {
   try {
     let output: string[] = [];
-    const token = core.getInput('token', { required: false });
+    const token = core.getInput('token', { required: true });
+    console.log('Token is empty string:', token == '');
     const depth: number = parseInt(core.getInput('depth', { required: false }));
     const filtersInput = core.getInput('filters', { required: true });
     const alwaysTriggerDirs: string[] = core
@@ -21,15 +22,17 @@ export async function run() {
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
     let changes = await getFileChanges(token);
-    console.log("Files changed: " + changes);
+    console.log('Files changed: ' + changes);
 
     if (shouldAlwaysTrigger(alwaysTriggerDirs, changes)) {
-      console.log('One of the alwaysTriggerDirs was changed, triggering builds for all services');
+      console.log(
+        'One of the alwaysTriggerDirs was changed, triggering builds for all services'
+      );
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 
     output = getOutput(filters, changes, depth);
-    console.log("Modified files: " + output);
+    console.log('Modified files: ' + output);
 
     core.setOutput('matrix', JSON.stringify(output));
     core.setOutput('empty', JSON.stringify(output.length === 0));
@@ -41,7 +44,7 @@ export async function run() {
 export function getOutput(filters: string[], changes: string[], depth: number) {
   const output: string[] = [];
   filters.forEach((filter) => {
-    const matchList = match(changes, filter, {dot: true});
+    const matchList = match(changes, filter, { dot: true });
     matchList.forEach((potentialMatch) => {
       const baseFolder = potentialMatch.split('/').slice(0, depth).join('/');
       if (output.indexOf(baseFolder) === -1) {
@@ -55,9 +58,8 @@ export function getOutput(filters: string[], changes: string[], depth: number) {
 async function getFileChanges(token: string): Promise<string[] | null> {
   if (github.context.eventName === 'pull_request') {
     const pr = (github.context.payload as PullRequestEvent).pull_request;
-    return token
-      ? await getChangedFilesFromApi(token, pr)
-      : await getChangedFilesFromGit(pr.base.sha);
+    console.log(pr);
+    return await getChangedFilesFromApi(token, pr);
   } else if (github.context.eventName === 'push') {
     return getFileChangesFromPush();
   } else {
@@ -128,7 +130,7 @@ export function shouldAlwaysTrigger(
   changes: string[]
 ) {
   for (const dir of alwaysTriggerDirs) {
-    if (match(changes, dir, {dot: true}).length > 0) {
+    if (match(changes, dir, { dot: true }).length > 0) {
       return true;
     }
   }
