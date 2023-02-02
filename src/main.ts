@@ -9,7 +9,6 @@ export async function run() {
   try {
     let output: string[] = [];
     const token = core.getInput('token', { required: true });
-    console.log('Token is empty string:', token == '');
     const depth: number = parseInt(core.getInput('depth', { required: false }));
     const filtersInput = core.getInput('filters', { required: true });
     const alwaysTriggerDirs: string[] = core
@@ -56,7 +55,6 @@ export function getOutput(filters: string[], changes: string[], depth: number) {
 }
 
 async function getFileChanges(token: string): Promise<string[] | null> {
-  console.log(github.context);
   if (github.context.eventName === 'pull_request') {
     const pr = (github.context.payload as PullRequestEvent).pull_request;
     return await getChangedFilesFromApi(token, pr);
