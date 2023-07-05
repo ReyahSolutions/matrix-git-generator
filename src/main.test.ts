@@ -34,7 +34,11 @@ describe('Diff matching', () => {
       getOutput(['services/*/*/**'], ['services/group-1/service-a/index.js'], 3)
     ).toEqual(['services/group-1/service-a']);
     expect(
-      getOutput(['services/*/*/**'], ['services/group-1/service-a/.gitignore'], 3)
+      getOutput(
+        ['services/*/*/**'],
+        ['services/group-1/service-a/.gitignore'],
+        3
+      )
     ).toEqual(['services/group-1/service-a']);
   });
 });
@@ -42,7 +46,12 @@ describe('Diff matching', () => {
 describe('Should always trigger', () => {
   it('Should trigger when file inside defined directory is modified', async () => {
     expect(shouldAlwaysTrigger(['ci/**'], ['ci/test.sh'])).toBeTruthy();
-    expect(shouldAlwaysTrigger(['ci/**', ".github/workflows/**"], ['ci/skaffold.yml'])).toBeTruthy();
+    expect(
+      shouldAlwaysTrigger(
+        ['ci/**', '.github/workflows/**'],
+        ['ci/skaffold.yml']
+      )
+    ).toBeTruthy();
   });
 });
 
@@ -62,7 +71,7 @@ describe('Get all files', () => {
       'src/main.test.ts',
       'src/main.ts',
       'tsconfig.json',
-      'yarn.lock',
+      'yarn.lock'
     ]);
   });
 });
