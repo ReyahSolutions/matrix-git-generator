@@ -3,43 +3,88 @@ import { expect } from '@jest/globals';
 
 describe('Diff matching', () => {
   it('Should match for a single service', async () => {
-    expect(getOutput(['service.*/**'], ['service.Foo/index.js'], 1)).toEqual([
-      'service.Foo'
-    ]);
+    expect(
+      getOutput(['service.*/**'], [], ['service.Foo/index.js'], 1)
+    ).toEqual(['service.Foo']);
   });
   it('Should match for a TWO serviceS', async () => {
     expect(
       getOutput(
         ['service.*/**'],
+        [],
         ['service.Foo/index.js', 'service.Bar/index.js'],
         1
       )
     ).toEqual(['service.Foo', 'service.Bar']);
   });
   it('Should not match for a single service', async () => {
-    expect(getOutput(['service.*/**'], ['otherFile'], 1)).toEqual([]);
+    expect(getOutput(['service.*/**'], [], ['otherFile'], 1)).toEqual([]);
   });
   it('Should work for depth greater than 1', async () => {
     expect(
-      getOutput(['services/*/**'], ['services/service-a/index.js'], 2)
+      getOutput(['services/*/**'], [], ['services/service-a/index.js'], 2)
     ).toEqual(['services/service-a']);
     expect(
       getOutput(
         ['services/*/**'],
+        [],
         ['services/service-a/index.js', 'services/service-b/index.js'],
         2
       )
     ).toEqual(['services/service-a', 'services/service-b']);
     expect(
-      getOutput(['services/*/*/**'], ['services/group-1/service-a/index.js'], 3)
+      getOutput(
+        ['services/*/*/**'],
+        [],
+        ['services/group-1/service-a/index.js'],
+        3
+      )
     ).toEqual(['services/group-1/service-a']);
     expect(
       getOutput(
         ['services/*/*/**'],
+        [],
         ['services/group-1/service-a/.gitignore'],
         3
       )
     ).toEqual(['services/group-1/service-a']);
+  });
+  it('Should exclude certain files, based on the exclude parameter', async () => {
+    expect(
+      getOutput(
+        ['services/*/**'],
+        ['services/service-a/**'],
+        ['services/service-a/index.js'],
+        2
+      )
+    ).toEqual([]);
+    expect(
+      getOutput(
+        ['services/*/**'],
+        ['services/service-a/**'],
+        ['services/service-a/index.js', 'services/service-b/index.js'],
+        2
+      )
+    ).toEqual(['services/service-b']);
+    expect(
+      getOutput(
+        ['restructure/services/*/**'],
+        ['**/_terraform/**'],
+        [
+          'restructure/services/service-a/api/index.js',
+          'restructure/services/_terraform/main.tf'
+        ],
+        4
+      )
+    ).toEqual(['restructure/services/service-a/api']);
+    expect(
+      getOutput(
+        ['restructure/services/*/**'],
+        ['**/_terraform/**'],
+        ['restructure/services/service-b/_terraform/main.tf'],
+        4
+      )
+    ).toEqual([]);
   });
 });
 
