@@ -11,6 +11,7 @@ export async function run() {
     const token = core.getInput('token', { required: true });
     const depth: number = parseInt(core.getInput('depth', { required: false }));
     const filtersInput = core.getInput('filters', { required: true });
+    const filterExcludeInput = core.getInput('exclude', { required: false });
     const alwaysTriggerDirs: string[] = core
       .getInput('alwaysTriggerDirs', { required: false })
       .split('\n')
@@ -20,6 +21,14 @@ export async function run() {
       .split('\n')
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
+
+    const exclude = filterExcludeInput
+      ? filterExcludeInput
+          .split('\n')
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0)
+      : [];
+
     let changes = await getFileChanges(token);
     console.log('Files changed: ' + changes);
 
@@ -30,7 +39,7 @@ export async function run() {
       changes = await getAllFilesFromGit(github.context.ref, depth);
     }
 
-    output = getOutput(filters, changes, depth);
+    output = getOutput(filters, exclude, changes, depth);
     console.log('Modified files: ' + output);
 
     core.setOutput('matrix', JSON.stringify(output));
@@ -40,16 +49,36 @@ export async function run() {
   }
 }
 
-export function getOutput(filters: string[], changes: string[], depth: number) {
+export function getOutput(
+  filters: string[],
+  exclude: string[],
+  changes: string[],
+  depth: number
+) {
   const output: string[] = [];
+  const allMatches: string[] = [];
   filters.forEach((filter) => {
     const matchList = match(changes, filter, { dot: true });
     matchList.forEach((potentialMatch) => {
-      const baseFolder = potentialMatch.split('/').slice(0, depth).join('/');
-      if (output.indexOf(baseFolder) === -1) {
-        output.push(baseFolder);
+      if (allMatches.indexOf(potentialMatch) === -1) {
+        allMatches.push(potentialMatch);
       }
     });
+  });
+  exclude.forEach((filter) => {
+    const matchList = match(allMatches, filter, { dot: true });
+    matchList.forEach((match) => {
+      const index = allMatches.indexOf(match);
+      if (index > -1) {
+        allMatches.splice(index, 1);
+      }
+    });
+  });
+  allMatches.forEach((match) => {
+    const baseFolder = match.split('/').slice(0, depth).join('/');
+    if (output.indexOf(baseFolder) === -1) {
+      output.push(baseFolder);
+    }
   });
   return output;
 }
@@ -106,7 +135,12 @@ async function getChangedFilesFromApi(
   const client = github.getOctokit(token);
   const pageSize = 100;
   const files: string[] = [];
-  for (let page = 0; page * pageSize < pullRequest.changed_files; page++) {
+
+  // convert changedFiles to the nearest multiple of pageSize
+  const changedFiles =
+    Math.ceil(pullRequest.changed_files / pageSize) * pageSize;
+
+  for (let page = 1; page * pageSize <= changedFiles; page++) {
     const response = await client.rest.pulls.listFiles({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,

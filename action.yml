@@ -38,6 +38,10 @@ inputs:
   filters:
     description: A list of filter to apply
     required: true
+  exclude:
+    description: A list of filter to exclude
+    required: false
+    default: ''
 outputs:
   matrix:
     description: An stringified array for each sub-directories that contain a file changes and that match the filters
