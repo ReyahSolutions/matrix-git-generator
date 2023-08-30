@@ -98,6 +98,30 @@ describe('Should always trigger', () => {
       )
     ).toBeTruthy();
   });
+  
+ 
+});
+
+describe('Should always trigger with exclusions', () => {
+  it('Should trigger when file inside defined directory is modified (exclusions)', async () => {
+    expect(
+      shouldAlwaysTrigger(
+        ['ci/!(libraries)/**'],
+        ['ci/libraries/app.js', 'ci/bumba/app.js']
+      )
+    ).toBeTruthy();
+  });
+  
+  it('Should not trigger when file inside defined directory is modified (exclusions)', async () => {
+    expect(
+      shouldAlwaysTrigger(
+        ['ci/!(libraries)/**'],
+        ['ci/libraries/app.js']
+      )
+    ).toBeFalsy();
+  });
+  
+ 
 });
 
 describe('Get all files', () => {
